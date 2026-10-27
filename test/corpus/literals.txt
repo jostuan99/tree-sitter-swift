@@ -1,0 +1,100 @@
+================
+Integer literals
+================
+
+1
+1_000_000
+0x1F
+0o17
+0b1010
+
+---
+
+(source_file
+  (integer_literal)
+  (integer_literal)
+  (hex_literal)
+  (oct_literal)
+  (bin_literal))
+
+=============
+Real literals
+=============
+
+1.5
+1e10
+2.5E-3
+0x1p-2
+
+---
+
+(source_file
+  (real_literal)
+  (real_literal)
+  (real_literal)
+  (hex_literal))
+
+================
+Booleans and nil
+================
+
+true
+false
+nil
+
+---
+
+(source_file
+  (boolean_literal)
+  (boolean_literal)
+  (nil))
+
+=============================
+Array and dictionary literals
+=============================
+
+[1, 2, 3,]
+["a": 1, "b": 2]
+[:]
+[]
+
+---
+
+(source_file
+  (array_literal
+    (integer_literal)
+    (integer_literal)
+    (integer_literal))
+  (dictionary_literal
+    (dictionary_element
+      (line_string_literal
+        (string_content))
+      (integer_literal))
+    (dictionary_element
+      (line_string_literal
+        (string_content))
+      (integer_literal)))
+  (dictionary_literal)
+  (array_literal))
+
+==============
+Tuple literals
+==============
+
+(1, "a")
+(x: 1, y: 2)
+()
+
+---
+
+(source_file
+  (tuple_expression
+    (integer_literal)
+    (line_string_literal
+      (string_content)))
+  (tuple_expression
+    (simple_identifier)
+    (integer_literal)
+    (simple_identifier)
+    (integer_literal))
+  (tuple_expression))

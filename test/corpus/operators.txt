@@ -1,0 +1,319 @@
+=====================
+Arithmetic precedence
+=====================
+
+a + b * c - d / e
+
+---
+
+(source_file
+  (binary_expression
+    (binary_expression
+      (simple_identifier)
+      (binary_expression
+        (simple_identifier)
+        (simple_identifier)))
+    (binary_expression
+      (simple_identifier)
+      (simple_identifier))))
+
+================================
+Comparison and logical operators
+================================
+
+a < b && c >= d || !e
+
+---
+
+(source_file
+  (binary_expression
+    (binary_expression
+      (binary_expression
+        (simple_identifier)
+        (simple_identifier))
+      (binary_expression
+        (simple_identifier)
+        (simple_identifier)))
+    (prefix_expression
+      (simple_identifier))))
+
+=========================
+Nil coalescing and ranges
+=========================
+
+x ?? 0
+0..<n
+1...10
+arr[2...]
+...5
+
+---
+
+(source_file
+  (binary_expression
+    (simple_identifier)
+    (integer_literal))
+  (binary_expression
+    (integer_literal)
+    (simple_identifier))
+  (binary_expression
+    (integer_literal)
+    (integer_literal))
+  (subscript_expression
+    (simple_identifier)
+    (value_argument
+      (binary_expression
+        (integer_literal))))
+  (prefix_expression
+    (integer_literal)))
+
+=======
+Ternary
+=======
+
+let x = cond ? a : b
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (ternary_expression
+        (simple_identifier)
+        (simple_identifier)
+        (simple_identifier)))))
+
+====================
+Assignment operators
+====================
+
+x = 1
+x += 2
+x <<= 1
+
+---
+
+(source_file
+  (assignment_expression
+    (simple_identifier)
+    (integer_literal))
+  (assignment_expression
+    (simple_identifier)
+    (integer_literal))
+  (assignment_expression
+    (simple_identifier)
+    (integer_literal)))
+
+================
+Custom operators
+================
+
+a <*> b
+let f = x |> g
+
+---
+
+(source_file
+  (binary_expression
+    (simple_identifier)
+    (custom_operator)
+    (simple_identifier))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (binary_expression
+        (simple_identifier)
+        (custom_operator)
+        (simple_identifier)))))
+
+=================
+Unicode operators
+=================
+
+let s = a ∪ b
+let t = x ∘ y
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (binary_expression
+        (simple_identifier)
+        (custom_operator)
+        (simple_identifier))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (binary_expression
+        (simple_identifier)
+        (custom_operator)
+        (simple_identifier)))))
+
+=============
+Dot operators
+=============
+
+infix operator .<: ComparisonPrecedence
+static func .<(a: Self, b: Self) -> M {}
+let m = a .== b
+
+---
+
+(source_file
+  (operator_declaration
+    (custom_operator)
+    (simple_identifier))
+  (function_declaration
+    (modifiers
+      (modifier))
+    (custom_operator)
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier)))
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (user_type
+      (type_identifier))
+    (code_block))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (binary_expression
+        (simple_identifier)
+        (custom_operator)
+        (simple_identifier)))))
+
+===================
+Operator references
+===================
+
+items.sorted(by: <)
+numbers.reduce(0, +)
+
+---
+
+(source_file
+  (call_expression
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier))
+    (value_arguments
+      (value_argument
+        (simple_identifier)
+        (operator_reference))))
+  (call_expression
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier))
+    (value_arguments
+      (value_argument
+        (integer_literal))
+      (value_argument
+        (operator_reference)))))
+
+=====
+Casts
+=====
+
+x as Int
+y as? String
+z as! Double
+w is Int
+
+---
+
+(source_file
+  (cast_expression
+    (simple_identifier)
+    (user_type
+      (type_identifier)))
+  (cast_expression
+    (simple_identifier)
+    (user_type
+      (type_identifier)))
+  (cast_expression
+    (simple_identifier)
+    (user_type
+      (type_identifier)))
+  (check_expression
+    (simple_identifier)
+    (user_type
+      (type_identifier))))
+
+==================================
+Optional chaining and force unwrap
+==================================
+
+a?.b?.c
+d!.e
+f?[0]
+
+---
+
+(source_file
+  (navigation_expression
+    (postfix_expression
+      (navigation_expression
+        (postfix_expression
+          (simple_identifier))
+        (simple_identifier)))
+    (simple_identifier))
+  (navigation_expression
+    (postfix_expression
+      (simple_identifier))
+    (simple_identifier))
+  (subscript_expression
+    (postfix_expression
+      (simple_identifier))
+    (value_argument
+      (integer_literal))))
+
+=============
+Bit operators
+=============
+
+a & b | c ^ ~d
+x << 2 >> 1
+
+---
+
+(source_file
+  (binary_expression
+    (binary_expression
+      (binary_expression
+        (simple_identifier)
+        (simple_identifier))
+      (simple_identifier))
+    (prefix_expression
+      (simple_identifier)))
+  (binary_expression
+    (binary_expression
+      (simple_identifier)
+      (integer_literal))
+    (integer_literal)))
+
+=====================
+Prefix inout argument
+=====================
+
+swap(&a, &b)
+
+---
+
+(source_file
+  (call_expression
+    (simple_identifier)
+    (value_arguments
+      (value_argument
+        (prefix_expression
+          (simple_identifier)))
+      (value_argument
+        (prefix_expression
+          (simple_identifier))))))

@@ -1,0 +1,293 @@
+=========================
+If directive at top level
+=========================
+
+#if DEBUG
+import Debug
+#elseif os(iOS) && !targetEnvironment(simulator)
+import UIKit
+#else
+import AppKit
+#endif
+
+---
+
+(source_file
+  (if_directive
+    (simple_identifier)
+    (import_declaration
+      (identifier
+        (simple_identifier)))
+    (binary_expression
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (simple_identifier))))
+      (prefix_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments
+            (value_argument
+              (simple_identifier))))))
+    (import_declaration
+      (identifier
+        (simple_identifier)))
+    (import_declaration
+      (identifier
+        (simple_identifier)))))
+
+==============
+Version checks
+==============
+
+#if swift(>=5.9) || compiler(<6)
+let a = 1
+#endif
+#if canImport(Foundation)
+#endif
+
+---
+
+(source_file
+  (if_directive
+    (binary_expression
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (prefix_expression
+              (real_literal)))))
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (prefix_expression
+              (integer_literal))))))
+    (property_declaration
+      (property_binding
+        (simple_identifier)
+        (integer_literal))))
+  (if_directive
+    (call_expression
+      (simple_identifier)
+      (value_arguments
+        (value_argument
+          (simple_identifier))))))
+
+====================
+Directive in members
+====================
+
+struct S {
+  #if DEBUG
+  var debug = true
+  #endif
+  var x = 1
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (class_body
+      (if_directive
+        (simple_identifier)
+        (property_declaration
+          (property_binding
+            (simple_identifier)
+            (boolean_literal))))
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (integer_literal))))))
+
+===================
+Directive in switch
+===================
+
+switch x {
+case 1:
+  break
+#if DEBUG
+case 2:
+  break
+#endif
+default:
+  break
+}
+
+---
+
+(source_file
+  (switch_statement
+    (simple_identifier)
+    (switch_case
+      (switch_pattern
+        (integer_literal))
+      (break_statement))
+    (if_directive
+      (simple_identifier)
+      (switch_case
+        (switch_pattern
+          (integer_literal))
+        (break_statement)))
+    (switch_case
+      (default_keyword)
+      (break_statement))))
+
+===========================
+Directive around attributes
+===========================
+
+#if compiler(>=5.8)
+@_spi(Experimental)
+#endif
+public struct S {}
+
+---
+
+(source_file
+  (struct_declaration
+    (modifiers
+      (if_directive
+        (call_expression
+          (simple_identifier)
+          (value_arguments
+            (value_argument
+              (prefix_expression
+                (real_literal)))))
+        (attribute
+          (user_type
+            (type_identifier))
+          (attribute_argument
+            (simple_identifier))))
+      (modifier))
+    (type_identifier)
+    (class_body)))
+
+=======
+Shebang
+=======
+
+#!/usr/bin/env swift
+print(1)
+
+---
+
+(source_file
+  (shebang_line)
+  (call_expression
+    (simple_identifier)
+    (value_arguments
+      (value_argument
+        (integer_literal)))))
+
+============================
+Directive in a postfix chain
+============================
+
+Text("a")
+  .padding()
+  #if os(iOS)
+  .navigationBarTitle("x")
+  #elseif os(macOS)
+  .frame(width: 1)
+  #endif
+  .bold()
+
+---
+
+(source_file
+  (call_expression
+    (navigation_expression
+      (if_directive
+        (call_expression
+          (navigation_expression
+            (call_expression
+              (simple_identifier)
+              (value_arguments
+                (value_argument
+                  (line_string_literal
+                    (string_content)))))
+            (simple_identifier))
+          (value_arguments))
+        (call_expression
+          (simple_identifier)
+          (value_arguments
+            (value_argument
+              (simple_identifier))))
+        (navigation_suffix
+          (simple_identifier))
+        (value_arguments
+          (value_argument
+            (line_string_literal
+              (string_content))))
+        (call_expression
+          (simple_identifier)
+          (value_arguments
+            (value_argument
+              (simple_identifier))))
+        (navigation_suffix
+          (simple_identifier))
+        (value_arguments
+          (value_argument
+            (simple_identifier)
+            (integer_literal))))
+      (simple_identifier))
+    (value_arguments)))
+
+============================================
+Directive branch starting with a parenthesis
+============================================
+
+#if DEBUG
+(a, b) = c
+#endif
+
+---
+
+(source_file
+  (if_directive
+    (simple_identifier)
+    (assignment_expression
+      (tuple_expression
+        (simple_identifier)
+        (simple_identifier))
+      (simple_identifier))))
+
+===========================
+Nested directives in switch
+===========================
+
+switch x {
+case .a:
+  break
+#if A
+#if B
+case .b:
+  break
+#endif
+#endif
+}
+
+---
+
+(source_file
+  (switch_statement
+    (simple_identifier)
+    (switch_case
+      (switch_pattern
+        (enum_case_pattern
+          (simple_identifier)))
+      (break_statement))
+    (if_directive
+      (simple_identifier)
+      (if_directive
+        (simple_identifier)
+        (switch_case
+          (switch_pattern
+            (enum_case_pattern
+              (simple_identifier)))
+          (break_statement))))))

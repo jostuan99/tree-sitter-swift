@@ -1,0 +1,77 @@
+==========================
+Protocol with requirements
+==========================
+
+protocol Shape: AnyObject {
+  associatedtype Unit: Numeric = Double
+  var area: Unit { get }
+  var name: String { get set }
+  static func make() -> Self
+  init(size: Unit)
+}
+
+---
+
+(source_file
+  (protocol_declaration
+    (type_identifier)
+    (inheritance_clause
+      (user_type
+        (type_identifier)))
+    (class_body
+      (associatedtype_declaration
+        (type_identifier)
+        (inheritance_clause
+          (user_type
+            (type_identifier)))
+        (user_type
+          (type_identifier)))
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier)))
+          (accessor_block
+            (accessor))))
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier)))
+          (accessor_block
+            (accessor)
+            (accessor))))
+      (function_declaration
+        (modifiers
+          (modifier))
+        (simple_identifier)
+        (parameter_clause)
+        (user_type
+          (type_identifier)))
+      (init_declaration
+        (parameter_clause
+          (parameter
+            (simple_identifier)
+            (user_type
+              (type_identifier))))))))
+
+========================
+Primary associated types
+========================
+
+protocol Container<Element> {
+  associatedtype Element
+}
+
+---
+
+(source_file
+  (protocol_declaration
+    (type_identifier)
+    (primary_associated_types
+      (type_identifier))
+    (class_body
+      (associatedtype_declaration
+        (type_identifier)))))

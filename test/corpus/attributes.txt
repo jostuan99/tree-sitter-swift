@@ -1,0 +1,224 @@
+======================
+Availability attribute
+======================
+
+@available(iOS 15.0, macOS 12, *)
+func f() {}
+
+---
+
+(source_file
+  (function_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (real_literal))
+        (attribute_argument
+          (simple_identifier)
+          (integer_literal))
+        (attribute_argument)))
+    (simple_identifier)
+    (parameter_clause)
+    (code_block)))
+
+================================
+Attribute with labeled arguments
+================================
+
+@available(*, deprecated, renamed: "g", message: "use g")
+func f() {}
+
+---
+
+(source_file
+  (function_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument)
+        (attribute_argument
+          (simple_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))
+        (attribute_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))))
+    (simple_identifier)
+    (parameter_clause)
+    (code_block)))
+
+===================
+Main actor and objc
+===================
+
+@MainActor
+final class VM {}
+@objc(doThing:with:)
+func doThing(a: Int, with b: Int) {}
+
+---
+
+(source_file
+  (class_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier)))
+      (modifier))
+    (type_identifier)
+    (class_body))
+  (function_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (simple_identifier))))
+    (simple_identifier)
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier)))
+      (parameter
+        (simple_identifier)
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (code_block)))
+
+============================
+Keyword values in attributes
+============================
+
+@_documentation(visibility: internal) @_exported import Foo
+
+---
+
+(source_file
+  (import_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (simple_identifier)))
+      (attribute
+        (user_type
+          (type_identifier))))
+    (identifier
+      (simple_identifier))))
+
+====================
+Specialize attribute
+====================
+
+@_specialize(where T == Int)
+func f<T>(_ x: T) {}
+
+---
+
+(source_file
+  (function_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (where_clause
+            (type_requirement
+              (user_type
+                (type_identifier))
+              (user_type
+                (type_identifier)))))))
+    (simple_identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)))
+    (parameter_clause
+      (parameter
+        (wildcard)
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (code_block)))
+
+=====================================
+Platform versions and init references
+=====================================
+
+@backDeployed(before: macOS 14, iOS 17)
+@derivative(of: init(_:))
+func f() {}
+
+---
+
+(source_file
+  (function_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (simple_identifier)
+          (integer_literal))
+        (attribute_argument
+          (simple_identifier)
+          (integer_literal)))
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (call_expression
+            (simple_identifier)
+            (value_arguments
+              (function_reference_label
+                (wildcard)))))))
+    (simple_identifier)
+    (parameter_clause)
+    (code_block)))
+
+==============
+Result builder
+==============
+
+@resultBuilder
+struct Builder {
+  static func buildBlock(_ parts: String...) -> String { "" }
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))))
+    (type_identifier)
+    (class_body
+      (function_declaration
+        (modifiers
+          (modifier))
+        (simple_identifier)
+        (parameter_clause
+          (parameter
+            (wildcard)
+            (simple_identifier)
+            (user_type
+              (type_identifier))))
+        (user_type
+          (type_identifier))
+        (code_block
+          (line_string_literal))))))

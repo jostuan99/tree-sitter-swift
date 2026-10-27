@@ -1,0 +1,161 @@
+=================
+Macro declaration
+=================
+
+@freestanding(expression)
+public macro stringify<T>(_ value: T) -> (T, String) = #externalMacro(module: "M", type: "S")
+
+---
+
+(source_file
+  (macro_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier)))
+      (modifier))
+    (simple_identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)))
+    (parameter_clause
+      (parameter
+        (wildcard)
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (tuple_type
+      (tuple_type_element
+        (user_type
+          (type_identifier)))
+      (tuple_type_element
+        (user_type
+          (type_identifier))))
+    (macro_expansion_expression
+      (macro_name)
+      (value_arguments
+        (value_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))
+        (value_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))))))
+
+==============
+Attached macro
+==============
+
+@attached(member, names: named(init), arbitrary)
+@attached(extension, conformances: Equatable)
+macro AutoInit() = #externalMacro(module: "M", type: "A")
+
+---
+
+(source_file
+  (macro_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (call_expression
+            (simple_identifier)
+            (value_arguments
+              (value_argument
+                (simple_identifier)))))
+        (attribute_argument
+          (simple_identifier)))
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (simple_identifier))))
+    (simple_identifier)
+    (parameter_clause)
+    (macro_expansion_expression
+      (macro_name)
+      (value_arguments
+        (value_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))
+        (value_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))))))
+
+=========================
+Init names in macro roles
+=========================
+
+@attached(member, names: named(init), named(init(from:)))
+macro M() = #externalMacro(module: "A", type: "B")
+
+---
+
+(source_file
+  (macro_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier))
+        (attribute_argument
+          (simple_identifier))
+        (attribute_argument
+          (simple_identifier)
+          (call_expression
+            (simple_identifier)
+            (value_arguments
+              (value_argument
+                (simple_identifier)))))
+        (attribute_argument
+          (call_expression
+            (simple_identifier)
+            (value_arguments
+              (value_argument
+                (call_expression
+                  (simple_identifier)
+                  (value_arguments
+                    (value_argument
+                      (simple_identifier))))))))))
+    (simple_identifier)
+    (parameter_clause)
+    (macro_expansion_expression
+      (macro_name)
+      (value_arguments
+        (value_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))
+        (value_argument
+          (simple_identifier)
+          (line_string_literal
+            (string_content)))))))
+
+==========================
+Macro expansion in members
+==========================
+
+struct S {
+  #generateMembers()
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (class_body
+      (macro_expansion_expression
+        (macro_name)
+        (value_arguments)))))

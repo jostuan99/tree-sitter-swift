@@ -1,0 +1,258 @@
+==============
+Optional types
+==============
+
+var a: Int?
+var b: String!
+var c: [Int]?
+var d: Int??
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (optional_type
+          (user_type
+            (type_identifier))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (implicitly_unwrapped_type
+          (user_type
+            (type_identifier))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (optional_type
+          (array_type
+            (user_type
+              (type_identifier)))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (optional_type
+          (optional_type
+            (user_type
+              (type_identifier))))))))
+
+==============
+Function types
+==============
+
+var f: (Int, String) -> Bool
+var g: @escaping () async throws -> Void
+var h: (Int) throws(E) -> Int
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (function_type
+          (tuple_type
+            (tuple_type_element
+              (user_type
+                (type_identifier)))
+            (tuple_type_element
+              (user_type
+                (type_identifier))))
+          (user_type
+            (type_identifier))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (attributed_type
+          (attribute
+            (user_type
+              (type_identifier)))
+          (function_type
+            (tuple_type)
+            (throws_clause)
+            (user_type
+              (type_identifier)))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (function_type
+          (tuple_type
+            (tuple_type_element
+              (user_type
+                (type_identifier))))
+          (throws_clause
+            (user_type
+              (type_identifier)))
+          (user_type
+            (type_identifier)))))))
+
+===========
+Tuple types
+===========
+
+var t: (x: Int, y: Int)
+var u: ()
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (tuple_type
+          (tuple_type_element
+            (simple_identifier)
+            (user_type
+              (type_identifier)))
+          (tuple_type_element
+            (simple_identifier)
+            (user_type
+              (type_identifier)))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (tuple_type)))))
+
+=========
+Metatypes
+=========
+
+let a: Int.Type = Int.self
+let b: P.Protocol
+let c: Foo?.Type
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)
+          (type_identifier)))
+      (navigation_expression
+        (simple_identifier)
+        (simple_identifier))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)
+          (type_identifier)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (metatype_type
+          (optional_type
+            (user_type
+              (type_identifier))))))))
+
+====================
+Protocol composition
+====================
+
+var x: Codable & Hashable
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (protocol_composition_type
+          (user_type
+            (type_identifier))
+          (user_type
+            (type_identifier)))))))
+
+=================
+Nested user types
+=================
+
+let x: Foo.Bar<Int>.Baz
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)
+          (type_identifier)
+          (type_arguments
+            (user_type
+              (type_identifier)))
+          (type_identifier))))))
+
+============================
+Nested type of an array type
+============================
+
+func makeIterator() -> [Element].Iterator {}
+let i: [K: V].Index
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause)
+    (user_type
+      (array_type
+        (user_type
+          (type_identifier)))
+      (type_identifier))
+    (code_block))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (dictionary_type
+            (user_type
+              (type_identifier))
+            (user_type
+              (type_identifier)))
+          (type_identifier))))))
+
+==============
+Sending result
+==============
+
+func f() -> sending T {}
+let g: () async throws -> sending R
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause)
+    (user_type
+      (type_identifier))
+    (code_block))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (function_type
+          (tuple_type)
+          (throws_clause)
+          (user_type
+            (type_identifier)))))))

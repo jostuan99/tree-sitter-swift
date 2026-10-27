@@ -1,0 +1,139 @@
+=======================
+Type arguments in types
+=======================
+
+let a: [String: [Int]] = [:]
+let b: Dictionary<String, Array<Set<Int>>>
+let c: Result<Int, any Error>
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (dictionary_type
+          (user_type
+            (type_identifier))
+          (array_type
+            (user_type
+              (type_identifier)))))
+      (dictionary_literal)))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)
+          (type_arguments
+            (user_type
+              (type_identifier))
+            (user_type
+              (type_identifier)
+              (type_arguments
+                (user_type
+                  (type_identifier)
+                  (type_arguments
+                    (user_type
+                      (type_identifier)))))))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)
+          (type_arguments
+            (user_type
+              (type_identifier))
+            (existential_type
+              (user_type
+                (type_identifier)))))))))
+
+=============
+Where clauses
+=============
+
+extension Box: Equatable where T: Equatable, T.Element == Int {}
+
+---
+
+(source_file
+  (extension_declaration
+    (user_type
+      (type_identifier))
+    (inheritance_clause
+      (user_type
+        (type_identifier)))
+    (where_clause
+      (type_requirement
+        (user_type
+          (type_identifier))
+        (user_type
+          (type_identifier)))
+      (type_requirement
+        (user_type
+          (type_identifier)
+          (type_identifier))
+        (user_type
+          (type_identifier))))
+    (class_body)))
+
+============
+Some and any
+============
+
+func f() -> some View {}
+func g(x: any Collection<Int>) {}
+var h: (some P)? = nil
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause)
+    (opaque_type
+      (user_type
+        (type_identifier)))
+    (code_block))
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (existential_type
+          (user_type
+            (type_identifier)
+            (type_arguments
+              (user_type
+                (type_identifier)))))))
+    (code_block))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (optional_type
+          (tuple_type
+            (tuple_type_element
+              (opaque_type
+                (user_type
+                  (type_identifier)))))))
+      (nil))))
+
+===========
+Noncopyable
+===========
+
+struct File: ~Copyable {}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (inheritance_clause
+      (suppressed_type
+        (user_type
+          (type_identifier))))
+    (class_body)))

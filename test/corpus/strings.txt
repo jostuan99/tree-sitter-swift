@@ -1,0 +1,185 @@
+=============
+Simple string
+=============
+
+"hello world"
+
+---
+
+(source_file
+  (line_string_literal
+    (string_content)))
+
+============
+Empty string
+============
+
+""
+
+---
+
+(source_file
+  (line_string_literal))
+
+================
+Escape sequences
+================
+
+"tab\t newline\n quote\" unicode\u{1F600}"
+
+---
+
+(source_file
+  (line_string_literal
+    (string_content)
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)
+    (string_content)
+    (escape_sequence)))
+
+=============
+Interpolation
+=============
+
+"Hello \(name)! You are \(age + 1) years old"
+
+---
+
+(source_file
+  (line_string_literal
+    (string_content)
+    (interpolation
+      (value_argument
+        (simple_identifier)))
+    (string_content)
+    (interpolation
+      (value_argument
+        (binary_expression
+          (simple_identifier)
+          (integer_literal))))
+    (string_content)))
+
+====================
+Nested interpolation
+====================
+
+"outer \("inner \(x)")"
+
+---
+
+(source_file
+  (line_string_literal
+    (string_content)
+    (interpolation
+      (value_argument
+        (line_string_literal
+          (string_content)
+          (interpolation
+            (value_argument
+              (simple_identifier))))))))
+
+=========================
+Interpolation with labels
+=========================
+
+"\(value, specifier: "%.2f")"
+
+---
+
+(source_file
+  (line_string_literal
+    (interpolation
+      (value_argument
+        (simple_identifier))
+      (value_argument
+        (simple_identifier)
+        (line_string_literal
+          (string_content))))))
+
+=================
+Multi-line string
+=================
+
+"""
+  line one
+  "quoted" and ""double""
+  \(x)
+  """
+
+---
+
+(source_file
+  (multi_line_string_literal
+    (string_content)
+    (interpolation
+      (value_argument
+        (simple_identifier)))
+    (string_content)))
+
+==========
+Raw string
+==========
+
+#"raw \n "quotes" \#(x)"#
+
+---
+
+(source_file
+  (raw_string_literal
+    (string_content)
+    (interpolation
+      (value_argument
+        (simple_identifier)))))
+
+==========================
+Raw string with two hashes
+==========================
+
+##"a "# b"##
+
+---
+
+(source_file
+  (raw_string_literal
+    (string_content)))
+
+=============================
+Raw string containing a quote
+=============================
+
+#"""#
+
+---
+
+(source_file
+  (raw_string_literal
+    (string_content)))
+
+=====================
+Multi-line raw string
+=====================
+
+#"""
+  raw \(not)
+  """#
+
+---
+
+(source_file
+  (raw_string_literal
+    (string_content)))
+
+===========================
+Comment-like string content
+===========================
+
+"// not a comment /* nor this */"
+
+---
+
+(source_file
+  (line_string_literal
+    (string_content)))

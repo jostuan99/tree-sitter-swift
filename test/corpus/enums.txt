@@ -1,0 +1,113 @@
+===========
+Simple enum
+===========
+
+enum Direction {
+  case north, south
+  case east
+  case west
+}
+
+---
+
+(source_file
+  (enum_declaration
+    (type_identifier)
+    (enum_body
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier))
+        (enum_case_element
+          (simple_identifier)))
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier)))
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier))))))
+
+=========================
+Associated and raw values
+=========================
+
+enum E: Int {
+  case a = 1
+  case b
+}
+enum R {
+  case ok(value: Int, String)
+  case fail(Error? = nil)
+}
+
+---
+
+(source_file
+  (enum_declaration
+    (type_identifier)
+    (inheritance_clause
+      (user_type
+        (type_identifier)))
+    (enum_body
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier)
+          (integer_literal)))
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier)))))
+  (enum_declaration
+    (type_identifier)
+    (enum_body
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier)
+          (tuple_type
+            (tuple_type_element
+              (simple_identifier)
+              (user_type
+                (type_identifier)))
+            (tuple_type_element
+              (user_type
+                (type_identifier))))))
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier)
+          (tuple_type
+            (tuple_type_element
+              (optional_type
+                (user_type
+                  (type_identifier)))
+              (nil))))))))
+
+=============
+Indirect enum
+=============
+
+indirect enum Tree {
+  case leaf
+  indirect case node(Tree, Tree)
+}
+
+---
+
+(source_file
+  (enum_declaration
+    (modifiers
+      (modifier))
+    (type_identifier)
+    (enum_body
+      (enum_case_declaration
+        (enum_case_element
+          (simple_identifier)))
+      (enum_case_declaration
+        (modifiers
+          (modifier))
+        (enum_case_element
+          (simple_identifier)
+          (tuple_type
+            (tuple_type_element
+              (user_type
+                (type_identifier)))
+            (tuple_type_element
+              (user_type
+                (type_identifier)))))))))

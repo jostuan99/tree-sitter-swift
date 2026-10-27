@@ -1,0 +1,479 @@
+===========================
+If with multiple conditions
+===========================
+
+if let a = b, var c = d, a > 0, case .some(let e) = f, #available(iOS 15, *) {
+}
+
+---
+
+(source_file
+  (if_statement
+    (condition_list
+      (optional_binding_condition
+        (simple_identifier)
+        (simple_identifier))
+      (optional_binding_condition
+        (simple_identifier)
+        (simple_identifier))
+      (binary_expression
+        (simple_identifier)
+        (integer_literal))
+      (case_condition
+        (enum_case_pattern
+          (simple_identifier)
+          (tuple_pattern
+            (tuple_pattern_item
+              (value_binding_pattern
+                (simple_identifier)))))
+        (simple_identifier))
+      (availability_condition
+        (simple_identifier)
+        (integer_literal)))
+    (code_block)))
+
+================
+If let shorthand
+================
+
+if let value {
+  use(value)
+}
+
+---
+
+(source_file
+  (if_statement
+    (condition_list
+      (optional_binding_condition
+        (simple_identifier)))
+    (code_block
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (simple_identifier)))))))
+
+=============
+If else chain
+=============
+
+if a {
+} else if b {
+} else {
+}
+
+---
+
+(source_file
+  (if_statement
+    (condition_list
+      (simple_identifier))
+    (code_block)
+    (if_statement
+      (condition_list
+        (simple_identifier))
+      (code_block)
+      (code_block))))
+
+===============================================
+Condition call does not take a trailing closure
+===============================================
+
+if contains(x) {
+  found()
+}
+while next(&it) {
+}
+
+---
+
+(source_file
+  (if_statement
+    (condition_list
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (simple_identifier)))))
+    (code_block
+      (call_expression
+        (simple_identifier)
+        (value_arguments))))
+  (while_statement
+    (condition_list
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (prefix_expression
+              (simple_identifier))))))
+    (code_block)))
+
+=====
+Guard
+=====
+
+guard let x = y else { return }
+
+---
+
+(source_file
+  (guard_statement
+    (condition_list
+      (optional_binding_condition
+        (simple_identifier)
+        (simple_identifier)))
+    (code_block
+      (return_statement))))
+
+==========================================
+Condition does not take a trailing closure
+==========================================
+
+if items.isEmpty {
+  reload()
+}
+
+---
+
+(source_file
+  (if_statement
+    (condition_list
+      (navigation_expression
+        (simple_identifier)
+        (simple_identifier)))
+    (code_block
+      (call_expression
+        (simple_identifier)
+        (value_arguments)))))
+
+====================
+Switch with patterns
+====================
+
+switch value {
+case 0, 1:
+  break
+case let n where n > 10:
+  print(n)
+case .some(.none):
+  fallthrough
+case (let a, _):
+  print(a)
+case is String:
+  break
+case let s as String:
+  print(s)
+case 2...5:
+  break
+@unknown default:
+  break
+}
+
+---
+
+(source_file
+  (switch_statement
+    (simple_identifier)
+    (switch_case
+      (switch_pattern
+        (integer_literal))
+      (switch_pattern
+        (integer_literal))
+      (break_statement))
+    (switch_case
+      (switch_pattern
+        (value_binding_pattern
+          (simple_identifier))
+        (binary_expression
+          (simple_identifier)
+          (integer_literal)))
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (simple_identifier)))))
+    (switch_case
+      (switch_pattern
+        (enum_case_pattern
+          (simple_identifier)
+          (tuple_pattern
+            (tuple_pattern_item
+              (enum_case_pattern
+                (simple_identifier))))))
+      (fallthrough_statement))
+    (switch_case
+      (switch_pattern
+        (tuple_pattern
+          (tuple_pattern_item
+            (value_binding_pattern
+              (simple_identifier)))
+          (tuple_pattern_item
+            (wildcard))))
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (simple_identifier)))))
+    (switch_case
+      (switch_pattern
+        (is_pattern
+          (user_type
+            (type_identifier))))
+      (break_statement))
+    (switch_case
+      (switch_pattern
+        (value_binding_pattern
+          (cast_expression
+            (simple_identifier)
+            (user_type
+              (type_identifier)))))
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (simple_identifier)))))
+    (switch_case
+      (switch_pattern
+        (binary_expression
+          (integer_literal)
+          (integer_literal)))
+      (break_statement))
+    (switch_case
+      (attribute
+        (user_type
+          (type_identifier)))
+      (default_keyword)
+      (break_statement))))
+
+============
+For in loops
+============
+
+for i in 0..<10 {
+}
+for (k, v) in dict where v > 0 {
+}
+for case let .some(x) in items {
+}
+for try await line in lines {
+}
+
+---
+
+(source_file
+  (for_statement
+    (simple_identifier)
+    (binary_expression
+      (integer_literal)
+      (integer_literal))
+    (code_block))
+  (for_statement
+    (tuple_pattern
+      (tuple_pattern_item
+        (simple_identifier))
+      (tuple_pattern_item
+        (simple_identifier)))
+    (simple_identifier)
+    (binary_expression
+      (simple_identifier)
+      (integer_literal))
+    (code_block))
+  (for_statement
+    (value_binding_pattern
+      (enum_case_pattern
+        (simple_identifier)
+        (tuple_pattern
+          (tuple_pattern_item
+            (simple_identifier)))))
+    (simple_identifier)
+    (code_block))
+  (for_statement
+    (simple_identifier)
+    (simple_identifier)
+    (code_block)))
+
+================
+While and repeat
+================
+
+while x > 0 {
+  x -= 1
+}
+repeat {
+  x += 1
+} while x < 10
+
+---
+
+(source_file
+  (while_statement
+    (condition_list
+      (binary_expression
+        (simple_identifier)
+        (integer_literal)))
+    (code_block
+      (assignment_expression
+        (simple_identifier)
+        (integer_literal))))
+  (repeat_while_statement
+    (code_block
+      (assignment_expression
+        (simple_identifier)
+        (integer_literal)))
+    (binary_expression
+      (simple_identifier)
+      (integer_literal))))
+
+========
+Do catch
+========
+
+do {
+  try f()
+} catch let e as MyError {
+} catch MyError.bad(let code) where code > 0 {
+} catch {
+}
+
+---
+
+(source_file
+  (do_statement
+    (code_block
+      (try_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments))))
+    (catch_block
+      (value_binding_pattern
+        (cast_expression
+          (simple_identifier)
+          (user_type
+            (type_identifier))))
+      (code_block))
+    (catch_block
+      (call_expression
+        (navigation_expression
+          (simple_identifier)
+          (simple_identifier))
+        (value_arguments
+          (value_argument
+            (value_binding_pattern
+              (simple_identifier)))))
+      (binary_expression
+        (simple_identifier)
+        (integer_literal))
+      (code_block))
+    (catch_block
+      (code_block))))
+
+===============
+Typed throws do
+===============
+
+do throws(MyError) {
+  try f()
+}
+
+---
+
+(source_file
+  (do_statement
+    (throws_clause
+      (user_type
+        (type_identifier)))
+    (code_block
+      (try_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments))))))
+
+=====
+Defer
+=====
+
+defer { close() }
+
+---
+
+(source_file
+  (defer_statement
+    (code_block
+      (call_expression
+        (simple_identifier)
+        (value_arguments)))))
+
+================
+Control transfer
+================
+
+outer: for x in xs {
+  for y in ys {
+    if y { continue outer }
+    break outer
+  }
+}
+return
+throw MyError.bad
+
+---
+
+(source_file
+  (labeled_statement
+    (simple_identifier)
+    (for_statement
+      (simple_identifier)
+      (simple_identifier)
+      (code_block
+        (for_statement
+          (simple_identifier)
+          (simple_identifier)
+          (code_block
+            (if_statement
+              (condition_list
+                (simple_identifier))
+              (code_block
+                (continue_statement
+                  (simple_identifier))))
+            (break_statement
+              (simple_identifier)))))))
+  (return_statement)
+  (throw_statement
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier))))
+
+=================
+Return with value
+=================
+
+return x + 1
+
+---
+
+(source_file
+  (return_statement
+    (binary_expression
+      (simple_identifier)
+      (integer_literal))))
+
+=================
+Discard and yield
+=================
+
+discard self
+_read { yield value }
+
+---
+
+(source_file
+  (discard_statement
+    (self_expression))
+  (call_expression
+    (simple_identifier)
+    (trailing_closures
+      (closure_expression
+        (yield_statement
+          (simple_identifier))))))

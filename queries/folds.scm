@@ -1,0 +1,17 @@
+[
+  (class_body)
+  (enum_body)
+  (code_block)
+  (closure_expression)
+  (accessor_block)
+  (switch_statement)
+  (switch_case)
+  (if_directive)
+  (import_declaration)
+  (multi_line_string_literal)
+  (multiline_comment)
+  (array_literal)
+  (dictionary_literal)
+  (value_arguments)
+  (parameter_clause)
+] @fold

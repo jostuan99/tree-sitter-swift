@@ -1,0 +1,447 @@
+====================
+Function declaration
+====================
+
+func add(_ a: Int, b: Int) -> Int { a + b }
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause
+      (parameter
+        (wildcard)
+        (simple_identifier)
+        (user_type
+          (type_identifier)))
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (user_type
+      (type_identifier))
+    (code_block
+      (binary_expression
+        (simple_identifier)
+        (simple_identifier)))))
+
+==========
+Parameters
+==========
+
+func f(x: Int = 0, _ y: inout String, z: Int..., @escaping cb: @Sendable () -> Void) {}
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier))
+        (integer_literal))
+      (parameter
+        (wildcard)
+        (simple_identifier)
+        (parameter_modifier)
+        (user_type
+          (type_identifier)))
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier)))
+      (parameter
+        (attribute
+          (user_type
+            (type_identifier)))
+        (simple_identifier)
+        (attributed_type
+          (attribute
+            (user_type
+              (type_identifier)))
+          (function_type
+            (tuple_type)
+            (user_type
+              (type_identifier))))))
+    (code_block)))
+
+============
+Async throws
+============
+
+func load() async throws -> Data {}
+func g() rethrows {}
+func h() throws(MyError) {}
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause)
+    (throws_clause)
+    (user_type
+      (type_identifier))
+    (code_block))
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause)
+    (throws_clause)
+    (code_block))
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause)
+    (throws_clause
+      (user_type
+        (type_identifier)))
+    (code_block)))
+
+================
+Generic function
+================
+
+func f<T: Equatable, U>(a: T, b: U) -> T where U: Hashable {}
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)
+        (user_type
+          (type_identifier)))
+      (type_parameter
+        (type_identifier)))
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier)))
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (user_type
+      (type_identifier))
+    (where_clause
+      (type_requirement
+        (user_type
+          (type_identifier))
+        (user_type
+          (type_identifier))))
+    (code_block)))
+
+==================
+Operator functions
+==================
+
+static func + (lhs: V, rhs: V) -> V {}
+public func ??<T>(lhs: T?, rhs: T) -> T {}
+prefix func ! <T>(v: V<T>) -> V<T> {}
+
+---
+
+(source_file
+  (function_declaration
+    (modifiers
+      (modifier))
+    (custom_operator)
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier)))
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (user_type
+      (type_identifier))
+    (code_block))
+  (function_declaration
+    (modifiers
+      (modifier))
+    (custom_operator)
+    (type_parameters
+      (type_parameter
+        (type_identifier)))
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (optional_type
+          (user_type
+            (type_identifier))))
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (user_type
+      (type_identifier))
+    (code_block))
+  (function_declaration
+    (modifiers
+      (modifier))
+    (custom_operator)
+    (type_parameters
+      (type_parameter
+        (type_identifier)))
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier)
+          (type_arguments
+            (user_type
+              (type_identifier))))))
+    (user_type
+      (type_identifier)
+      (type_arguments
+        (user_type
+          (type_identifier))))
+    (code_block)))
+
+=================================
+Protocol requirement without body
+=================================
+
+protocol P {
+  func f() -> Int
+  func g()
+}
+
+---
+
+(source_file
+  (protocol_declaration
+    (type_identifier)
+    (class_body
+      (function_declaration
+        (simple_identifier)
+        (parameter_clause)
+        (user_type
+          (type_identifier)))
+      (function_declaration
+        (simple_identifier)
+        (parameter_clause)))))
+
+===============
+Init and deinit
+===============
+
+class A {
+  init?(x: Int) {}
+  convenience init() { self.init(x: 0)! }
+  required init(from decoder: Decoder) throws {}
+  deinit {}
+}
+
+---
+
+(source_file
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (init_declaration
+        (parameter_clause
+          (parameter
+            (simple_identifier)
+            (user_type
+              (type_identifier))))
+        (code_block))
+      (init_declaration
+        (modifiers
+          (modifier))
+        (parameter_clause)
+        (code_block
+          (postfix_expression
+            (call_expression
+              (navigation_expression
+                (self_expression)
+                (simple_identifier))
+              (value_arguments
+                (value_argument
+                  (simple_identifier)
+                  (integer_literal)))))))
+      (init_declaration
+        (modifiers
+          (modifier))
+        (parameter_clause
+          (parameter
+            (simple_identifier)
+            (simple_identifier)
+            (user_type
+              (type_identifier))))
+        (throws_clause)
+        (code_block))
+      (deinit_declaration
+        (code_block)))))
+
+=========
+Subscript
+=========
+
+struct S {
+  subscript(i: Int) -> Int {
+    get { a[i] }
+    set { a[i] = newValue }
+  }
+  subscript<T>(key k: T) -> T? { nil }
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (class_body
+      (subscript_declaration
+        (parameter_clause
+          (parameter
+            (simple_identifier)
+            (user_type
+              (type_identifier))))
+        (user_type
+          (type_identifier))
+        (accessor_block
+          (accessor
+            (code_block
+              (subscript_expression
+                (simple_identifier)
+                (value_argument
+                  (simple_identifier)))))
+          (accessor
+            (code_block
+              (assignment_expression
+                (subscript_expression
+                  (simple_identifier)
+                  (value_argument
+                    (simple_identifier)))
+                (simple_identifier))))))
+      (subscript_declaration
+        (type_parameters
+          (type_parameter
+            (type_identifier)))
+        (parameter_clause
+          (parameter
+            (simple_identifier)
+            (simple_identifier)
+            (user_type
+              (type_identifier))))
+        (optional_type
+          (user_type
+            (type_identifier)))
+        (code_block
+          (nil))))))
+
+=========
+Modifiers
+=========
+
+public static func a() {}
+private(set) var b = 1
+nonisolated func c() {}
+@objc dynamic var d: Int = 0
+override final class func e() {}
+
+---
+
+(source_file
+  (function_declaration
+    (modifiers
+      (modifier)
+      (modifier))
+    (simple_identifier)
+    (parameter_clause)
+    (code_block))
+  (property_declaration
+    (modifiers
+      (modifier))
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (function_declaration
+    (modifiers
+      (modifier))
+    (simple_identifier)
+    (parameter_clause)
+    (code_block))
+  (property_declaration
+    (modifiers
+      (attribute
+        (user_type
+          (type_identifier)))
+      (modifier))
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)))
+      (integer_literal)))
+  (function_declaration
+    (modifiers
+      (modifier)
+      (modifier)
+      (modifier))
+    (simple_identifier)
+    (parameter_clause)
+    (code_block)))
+
+===============
+Parameter packs
+===============
+
+func all<each T>(_ v: repeat each T) -> (repeat each T) {}
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)))
+    (parameter_clause
+      (parameter
+        (wildcard)
+        (simple_identifier)
+        (pack_expansion_type
+          (pack_reference_type
+            (user_type
+              (type_identifier))))))
+    (tuple_type
+      (tuple_type_element
+        (pack_expansion_type
+          (pack_reference_type
+            (user_type
+              (type_identifier))))))
+    (code_block)))
+
+========================================
+Function named with a contextual keyword
+========================================
+
+func open(url: URL) {}
+open(url: u)
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (user_type
+          (type_identifier))))
+    (code_block))
+  (call_expression
+    (simple_identifier)
+    (value_arguments
+      (value_argument
+        (simple_identifier)
+        (simple_identifier)))))

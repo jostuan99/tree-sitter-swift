@@ -1,0 +1,93 @@
+=============
+Line comments
+=============
+
+// a comment
+let x = 1 // trailing
+/// doc comment
+
+---
+
+(source_file
+  (comment)
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (comment)
+  (comment))
+
+=====================
+Nested block comments
+=====================
+
+/* outer /* inner */ still comment */
+let x = 1
+
+---
+
+(source_file
+  (multiline_comment)
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal))))
+
+====================================
+Block comment at the start of a line
+====================================
+
+let a = 1
+/* note */
+let b = 2
+x
+/* c */
+.bar()
+foo()
+/* d */ baz()
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (multiline_comment)
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (call_expression
+    (navigation_expression
+      (simple_identifier)
+      (multiline_comment)
+      (simple_identifier))
+    (value_arguments))
+  (call_expression
+    (simple_identifier)
+    (value_arguments))
+  (multiline_comment)
+  (call_expression
+    (simple_identifier)
+    (value_arguments)))
+
+=============================
+Comment between chained calls
+=============================
+
+foo()
+  // comment
+  .bar()
+
+---
+
+(source_file
+  (call_expression
+    (navigation_expression
+      (call_expression
+        (simple_identifier)
+        (value_arguments))
+      (comment)
+      (simple_identifier))
+    (value_arguments)))

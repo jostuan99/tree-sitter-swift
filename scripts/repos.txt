@@ -1,0 +1,10 @@
+# Reference repositories for the real-world smoke test.
+# Format: <git url> <ref> [<subdirectory to parse>]
+https://github.com/apple/swift-nio.git 2.77.0 Sources
+https://github.com/Alamofire/Alamofire.git 5.10.2 Source
+https://github.com/pointfreeco/swift-composable-architecture.git 1.17.0 Sources
+https://github.com/vapor/vapor.git 4.110.1 Sources
+https://github.com/realm/SwiftLint.git 0.57.1 Source
+https://github.com/swiftlang/swift-syntax.git 600.0.1 Sources
+https://github.com/apple/swift-argument-parser.git 1.5.0 Sources
+https://github.com/swiftlang/swift.git swift-6.0.3-RELEASE stdlib/public

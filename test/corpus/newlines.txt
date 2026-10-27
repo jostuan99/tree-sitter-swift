@@ -1,0 +1,195 @@
+================================
+Statements separated by newlines
+================================
+
+let a = 1
+let b = 2
+print(a)
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (call_expression
+    (simple_identifier)
+    (value_arguments
+      (value_argument
+        (simple_identifier)))))
+
+==========
+Semicolons
+==========
+
+let a = 1; let b = 2;
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal))))
+
+======================================
+Binary operator continues on next line
+======================================
+
+let total = a
+  + b
+  - c
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (binary_expression
+        (binary_expression
+          (simple_identifier)
+          (simple_identifier))
+        (simple_identifier)))))
+
+====================================
+Member access continues on next line
+====================================
+
+items
+  .map { $0 * 2 }
+  .filter { $0 > 2 }
+
+---
+
+(source_file
+  (call_expression
+    (navigation_expression
+      (call_expression
+        (navigation_expression
+          (simple_identifier)
+          (simple_identifier))
+        (trailing_closures
+          (closure_expression
+            (binary_expression
+              (simple_identifier)
+              (integer_literal)))))
+      (simple_identifier))
+    (trailing_closures
+      (closure_expression
+        (binary_expression
+          (simple_identifier)
+          (integer_literal))))))
+
+======================================
+Prefix operator starts a new statement
+======================================
+
+let a = b
+-c
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (simple_identifier)))
+  (prefix_expression
+    (simple_identifier)))
+
+==============================================
+Parenthesis on new line starts a new statement
+==============================================
+
+foo
+(bar)
+
+---
+
+(source_file
+  (simple_identifier)
+  (tuple_expression
+    (simple_identifier)))
+
+=================
+Else on next line
+=================
+
+if a {
+  x()
+}
+else {
+  y()
+}
+
+---
+
+(source_file
+  (if_statement
+    (condition_list
+      (simple_identifier))
+    (code_block
+      (call_expression
+        (simple_identifier)
+        (value_arguments)))
+    (code_block
+      (call_expression
+        (simple_identifier)
+        (value_arguments)))))
+
+=====================================
+Labeled trailing closure on next line
+=====================================
+
+Button {
+  tap()
+}
+label: {
+  Text("Hi")
+}
+
+---
+
+(source_file
+  (call_expression
+    (simple_identifier)
+    (trailing_closures
+      (closure_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments)))
+      (simple_identifier)
+      (closure_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments
+            (value_argument
+              (line_string_literal
+                (string_content)))))))))
+
+========================================
+Async on next line continues a signature
+========================================
+
+func f()
+  async throws -> Int
+
+---
+
+(source_file
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause)
+    (throws_clause)
+    (user_type
+      (type_identifier))))

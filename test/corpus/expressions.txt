@@ -1,0 +1,528 @@
+=================
+Calls with labels
+=================
+
+f(1, label: 2, 3)
+
+---
+
+(source_file
+  (call_expression
+    (simple_identifier)
+    (value_arguments
+      (value_argument
+        (integer_literal))
+      (value_argument
+        (simple_identifier)
+        (integer_literal))
+      (value_argument
+        (integer_literal)))))
+
+==========
+Subscripts
+==========
+
+a[0]
+m["k", default: 0]
+
+---
+
+(source_file
+  (subscript_expression
+    (simple_identifier)
+    (value_argument
+      (integer_literal)))
+  (subscript_expression
+    (simple_identifier)
+    (value_argument
+      (line_string_literal
+        (string_content)))
+    (value_argument
+      (simple_identifier)
+      (integer_literal))))
+
+==========================
+Navigation and tuple index
+==========================
+
+a.b.c
+t.0.1
+self.x
+super.init()
+
+---
+
+(source_file
+  (navigation_expression
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier))
+    (simple_identifier))
+  (navigation_expression
+    (navigation_expression
+      (simple_identifier)
+      (integer_literal))
+    (integer_literal))
+  (navigation_expression
+    (self_expression)
+    (simple_identifier))
+  (call_expression
+    (navigation_expression
+      (super_expression)
+      (simple_identifier))
+    (value_arguments)))
+
+===========================
+Implicit member expressions
+===========================
+
+let c: Color = .red
+f(.init(x: 1))
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)))
+      (implicit_member_expression
+        (simple_identifier))))
+  (call_expression
+    (simple_identifier)
+    (value_arguments
+      (value_argument
+        (call_expression
+          (implicit_member_expression
+            (simple_identifier))
+          (value_arguments
+            (value_argument
+              (simple_identifier)
+              (integer_literal))))))))
+
+======================
+Generic specialization
+======================
+
+let a = Array<Int>()
+let d = Dictionary<String, [Int]>()
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (generic_specialization_expression
+          (simple_identifier)
+          (type_arguments
+            (user_type
+              (type_identifier))))
+        (value_arguments))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (generic_specialization_expression
+          (simple_identifier)
+          (type_arguments
+            (user_type
+              (type_identifier))
+            (array_type
+              (user_type
+                (type_identifier)))))
+        (value_arguments)))))
+
+==========================
+Less-than is not a generic
+==========================
+
+if a < b, c > d {}
+
+---
+
+(source_file
+  (if_statement
+    (condition_list
+      (binary_expression
+        (simple_identifier)
+        (simple_identifier))
+      (binary_expression
+        (simple_identifier)
+        (simple_identifier)))
+    (code_block)))
+
+=============
+Try and await
+=============
+
+let x = try foo()
+let y = try? bar()
+let z = try! baz()
+let w = await qux()
+let v = try await both()
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (try_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (try_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (try_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (await_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (try_expression
+        (await_expression
+          (call_expression
+            (simple_identifier)
+            (value_arguments)))))))
+
+=========
+Key paths
+=========
+
+let a = \Person.name
+let b = \.count
+let c = \Foo.bar?.baz!
+let d = \.[0]
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (key_path_expression
+        (type_identifier)
+        (simple_identifier))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (key_path_expression
+        (simple_identifier))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (key_path_expression
+        (type_identifier)
+        (simple_identifier)
+        (simple_identifier))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (key_path_expression
+        (value_argument
+          (integer_literal))))))
+
+================
+Macro expansions
+================
+
+#warning("todo")
+let f = #file
+let u = #URL("https://x.y")
+#Preview {
+  ContentView()
+}
+
+---
+
+(source_file
+  (macro_expansion_expression
+    (macro_name)
+    (value_arguments
+      (value_argument
+        (line_string_literal
+          (string_content)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (macro_expansion_expression
+        (macro_name))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (macro_expansion_expression
+        (macro_name)
+        (value_arguments
+          (value_argument
+            (line_string_literal
+              (string_content)))))))
+  (macro_expansion_expression
+    (macro_name)
+    (trailing_closures
+      (closure_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments))))))
+
+=========
+Selectors
+=========
+
+#selector(Foo.bar(_:))
+#selector(getter: Foo.baz)
+#keyPath(Foo.bar)
+
+---
+
+(source_file
+  (selector_expression
+    (call_expression
+      (navigation_expression
+        (simple_identifier)
+        (simple_identifier))
+      (value_arguments
+        (function_reference_label
+          (wildcard)))))
+  (selector_expression
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier)))
+  (selector_expression
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier))))
+
+=========================
+If and switch expressions
+=========================
+
+let x = if a { 1 } else { 2 }
+let y = switch z {
+case 1: "one"
+default: "other"
+}
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (if_statement
+        (condition_list
+          (simple_identifier))
+        (code_block
+          (integer_literal))
+        (code_block
+          (integer_literal)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (switch_statement
+        (simple_identifier)
+        (switch_case
+          (switch_pattern
+            (integer_literal))
+          (line_string_literal
+            (string_content)))
+        (switch_case
+          (default_keyword)
+          (line_string_literal
+            (string_content)))))))
+
+===================
+Function references
+===================
+
+let f = foo(_:bar:)
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (function_reference_label
+            (wildcard))
+          (function_reference_label
+            (simple_identifier)))))))
+
+====================
+Existential metatype
+====================
+
+#expect(throws: (any Error).self) {}
+
+---
+
+(source_file
+  (macro_expansion_expression
+    (macro_name)
+    (value_arguments
+      (value_argument
+        (simple_identifier)
+        (navigation_expression
+          (tuple_expression
+            (existential_type
+              (user_type
+                (type_identifier))))
+          (simple_identifier))))
+    (trailing_closures
+      (closure_expression))))
+
+================
+Consume and copy
+================
+
+let y = consume x
+let z = copy y
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (consume_expression
+        (simple_identifier))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (consume_expression
+        (simple_identifier)))))
+
+===================
+Editor placeholders
+===================
+
+let v = <#value#>
+f(<#Shared<SyncUp>#>)
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (editor_placeholder)))
+  (call_expression
+    (simple_identifier)
+    (value_arguments
+      (value_argument
+        (editor_placeholder)))))
+
+=======================================
+Attributed types in collection literals
+=======================================
+
+let handlers = [UInt64: @Sendable () -> Void]()
+let list = [@MainActor () -> Void]()
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (dictionary_literal
+          (dictionary_element
+            (simple_identifier)
+            (attributed_type
+              (attribute
+                (user_type
+                  (type_identifier)))
+              (function_type
+                (tuple_type)
+                (user_type
+                  (type_identifier))))))
+        (value_arguments))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (array_literal
+          (attributed_type
+            (attribute
+              (user_type
+                (type_identifier)))
+            (function_type
+              (tuple_type)
+              (user_type
+                (type_identifier)))))
+        (value_arguments)))))
+
+=========================
+Key path to optional root
+=========================
+
+let a = \.!
+let b = \.?.count
+let c = \(Int, String).1
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (key_path_expression)))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (key_path_expression
+        (simple_identifier))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (key_path_expression
+        (tuple_type
+          (tuple_type_element
+            (user_type
+              (type_identifier)))
+          (tuple_type_element
+            (user_type
+              (type_identifier))))
+        (integer_literal)))))
+
+==============
+Regex literals
+==============
+
+let r = /[a-z]+\d/
+let e = #/a/b/#
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (regex_literal)))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (regex_literal))))

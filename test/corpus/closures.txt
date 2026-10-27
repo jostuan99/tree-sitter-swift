@@ -1,0 +1,229 @@
+================
+Trailing closure
+================
+
+items.forEach { print($0) }
+
+---
+
+(source_file
+  (call_expression
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier))
+    (trailing_closures
+      (closure_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments
+            (value_argument
+              (simple_identifier))))))))
+
+=======================
+Closure with parameters
+=======================
+
+let add = { (a: Int, b: Int) -> Int in a + b }
+let f = { x, y in x + y }
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (closure_expression
+        (closure_signature
+          (closure_parameters
+            (closure_parameter
+              (simple_identifier)
+              (user_type
+                (type_identifier)))
+            (closure_parameter
+              (simple_identifier)
+              (user_type
+                (type_identifier))))
+          (user_type
+            (type_identifier)))
+        (binary_expression
+          (simple_identifier)
+          (simple_identifier)))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (closure_expression
+        (closure_signature
+          (closure_parameters
+            (closure_parameter
+              (simple_identifier))
+            (closure_parameter
+              (simple_identifier))))
+        (binary_expression
+          (simple_identifier)
+          (simple_identifier))))))
+
+============
+Capture list
+============
+
+let f = { [weak self, unowned(unsafe) o, v = value] in
+  self?.go()
+}
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (closure_expression
+        (closure_signature
+          (capture_list
+            (capture_list_item
+              (ownership_modifier)
+              (self_expression))
+            (capture_list_item
+              (ownership_modifier)
+              (simple_identifier))
+            (capture_list_item
+              (simple_identifier)
+              (simple_identifier))))
+        (call_expression
+          (navigation_expression
+            (postfix_expression
+              (self_expression))
+            (simple_identifier))
+          (value_arguments))))))
+
+=======================
+Closure with attributes
+=======================
+
+Task { @MainActor in
+  await load()
+}
+
+---
+
+(source_file
+  (call_expression
+    (simple_identifier)
+    (trailing_closures
+      (closure_expression
+        (closure_signature
+          (attribute
+            (user_type
+              (type_identifier))))
+        (await_expression
+          (call_expression
+            (simple_identifier)
+            (value_arguments)))))))
+
+======================
+Async throwing closure
+======================
+
+let f = { () async throws -> Void in }
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (closure_expression
+        (closure_signature
+          (closure_parameters)
+          (throws_clause)
+          (user_type
+            (type_identifier)))))))
+
+==========================
+Multiple trailing closures
+==========================
+
+Button {
+  tap()
+} label: {
+  Text("Hi")
+}
+
+---
+
+(source_file
+  (call_expression
+    (simple_identifier)
+    (trailing_closures
+      (closure_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments)))
+      (simple_identifier)
+      (closure_expression
+        (call_expression
+          (simple_identifier)
+          (value_arguments
+            (value_argument
+              (line_string_literal
+                (string_content)))))))))
+
+========================================
+Call with arguments and trailing closure
+========================================
+
+UIView.animate(withDuration: 0.3) {
+  view.alpha = 0
+} completion: { _ in
+  done()
+}
+
+---
+
+(source_file
+  (call_expression
+    (navigation_expression
+      (simple_identifier)
+      (simple_identifier))
+    (value_arguments
+      (value_argument
+        (simple_identifier)
+        (real_literal)))
+    (trailing_closures
+      (closure_expression
+        (assignment_expression
+          (navigation_expression
+            (simple_identifier)
+            (simple_identifier))
+          (integer_literal)))
+      (simple_identifier)
+      (closure_expression
+        (closure_signature
+          (closure_parameters
+            (closure_parameter
+              (wildcard))))
+        (call_expression
+          (simple_identifier)
+          (value_arguments))))))
+
+===========================
+Immediately invoked closure
+===========================
+
+let x: Int = {
+  return 1
+}()
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (type_annotation
+        (user_type
+          (type_identifier)))
+      (call_expression
+        (closure_expression
+          (return_statement
+            (integer_literal)))
+        (value_arguments)))))

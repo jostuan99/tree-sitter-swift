@@ -1,0 +1,433 @@
+======================
+Class with inheritance
+======================
+
+final class Dog: Animal, Codable {
+  let name: String
+  var age = 0
+}
+
+---
+
+(source_file
+  (class_declaration
+    (modifiers
+      (modifier))
+    (type_identifier)
+    (inheritance_clause
+      (user_type
+        (type_identifier))
+      (user_type
+        (type_identifier)))
+    (class_body
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier)))))
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (integer_literal))))))
+
+====================
+Struct with generics
+====================
+
+struct Box<T: Equatable>: Equatable where T: Sendable {
+  var value: T
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)
+        (user_type
+          (type_identifier))))
+    (inheritance_clause
+      (user_type
+        (type_identifier)))
+    (where_clause
+      (type_requirement
+        (user_type
+          (type_identifier))
+        (user_type
+          (type_identifier))))
+    (class_body
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier))))))))
+
+=====
+Actor
+=====
+
+actor Counter {
+  var count = 0
+  func increment() { count += 1 }
+}
+
+---
+
+(source_file
+  (actor_declaration
+    (type_identifier)
+    (class_body
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (integer_literal)))
+      (function_declaration
+        (simple_identifier)
+        (parameter_clause)
+        (code_block
+          (assignment_expression
+            (simple_identifier)
+            (integer_literal)))))))
+
+=========
+Extension
+=========
+
+extension Array where Element == Int {
+  var sum: Int { reduce(0, +) }
+}
+
+---
+
+(source_file
+  (extension_declaration
+    (user_type
+      (type_identifier))
+    (where_clause
+      (type_requirement
+        (user_type
+          (type_identifier))
+        (user_type
+          (type_identifier))))
+    (class_body
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier)))
+          (code_block
+            (call_expression
+              (simple_identifier)
+              (value_arguments
+                (value_argument
+                  (integer_literal))
+                (value_argument
+                  (operator_reference))))))))))
+
+=================================
+Computed properties and observers
+=================================
+
+struct S {
+  var a: Int { 1 }
+  var b: Int {
+    get { _b }
+    set(v) { _b = v }
+  }
+  var c = 0 {
+    willSet { print(newValue) }
+    didSet { print(oldValue) }
+  }
+  var d: Int { get async throws { 1 } }
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (class_body
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier)))
+          (code_block
+            (integer_literal))))
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier)))
+          (accessor_block
+            (accessor
+              (code_block
+                (simple_identifier)))
+            (accessor
+              (simple_identifier)
+              (code_block
+                (assignment_expression
+                  (simple_identifier)
+                  (simple_identifier)))))))
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (integer_literal)
+          (accessor_block
+            (accessor
+              (code_block
+                (call_expression
+                  (simple_identifier)
+                  (value_arguments
+                    (value_argument
+                      (simple_identifier))))))
+            (accessor
+              (code_block
+                (call_expression
+                  (simple_identifier)
+                  (value_arguments
+                    (value_argument
+                      (simple_identifier)))))))))
+      (property_declaration
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier)))
+          (accessor_block
+            (accessor
+              (throws_clause)
+              (code_block
+                (integer_literal)))))))))
+
+=================
+Property wrappers
+=================
+
+struct V {
+  @State private var on = false
+  @Published var items: [Item] = []
+  @Environment(\.dismiss) var dismiss
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (class_body
+      (property_declaration
+        (modifiers
+          (attribute
+            (user_type
+              (type_identifier)))
+          (modifier))
+        (property_binding
+          (simple_identifier)
+          (boolean_literal)))
+      (property_declaration
+        (modifiers
+          (attribute
+            (user_type
+              (type_identifier))))
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (array_type
+              (user_type
+                (type_identifier))))
+          (array_literal)))
+      (property_declaration
+        (modifiers
+          (attribute
+            (user_type
+              (type_identifier))
+            (attribute_argument
+              (key_path_expression
+                (simple_identifier)))))
+        (property_binding
+          (simple_identifier))))))
+
+========================
+Lazy and weak properties
+========================
+
+class C {
+  lazy var x = make()
+  weak var delegate: D?
+  unowned let owner: O
+}
+
+---
+
+(source_file
+  (class_declaration
+    (type_identifier)
+    (class_body
+      (property_declaration
+        (modifiers
+          (modifier))
+        (property_binding
+          (simple_identifier)
+          (call_expression
+            (simple_identifier)
+            (value_arguments))))
+      (property_declaration
+        (modifiers
+          (modifier))
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (optional_type
+              (user_type
+                (type_identifier))))))
+      (property_declaration
+        (modifiers
+          (modifier))
+        (property_binding
+          (simple_identifier)
+          (type_annotation
+            (user_type
+              (type_identifier))))))))
+
+=========================================
+Multiple bindings and tuple destructuring
+=========================================
+
+let a = 1, b = 2
+var (x, y) = (1, 2)
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (integer_literal))
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (property_declaration
+    (property_binding
+      (tuple_pattern
+        (tuple_pattern_item
+          (simple_identifier))
+        (tuple_pattern_item
+          (simple_identifier)))
+      (tuple_expression
+        (integer_literal)
+        (integer_literal)))))
+
+======================================================
+Property initialized by a call with a trailing closure
+======================================================
+
+let sorted = items.sorted(by: key) { a, b in a < b }
+let total = reduce(into: 0) { $0 += $1 }
+
+---
+
+(source_file
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (navigation_expression
+          (simple_identifier)
+          (simple_identifier))
+        (value_arguments
+          (value_argument
+            (simple_identifier)
+            (simple_identifier)))
+        (trailing_closures
+          (closure_expression
+            (closure_signature
+              (closure_parameters
+                (closure_parameter
+                  (simple_identifier))
+                (closure_parameter
+                  (simple_identifier))))
+            (binary_expression
+              (simple_identifier)
+              (simple_identifier)))))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (simple_identifier)
+        (value_arguments
+          (value_argument
+            (simple_identifier)
+            (integer_literal)))
+        (trailing_closures
+          (closure_expression
+            (assignment_expression
+              (simple_identifier)
+              (simple_identifier))))))))
+
+=========
+Typealias
+=========
+
+typealias Handler = (Result<Int, Error>) -> Void
+typealias Pair<T> = (T, T)
+
+---
+
+(source_file
+  (typealias_declaration
+    (type_identifier)
+    (function_type
+      (tuple_type
+        (tuple_type_element
+          (user_type
+            (type_identifier)
+            (type_arguments
+              (user_type
+                (type_identifier))
+              (user_type
+                (type_identifier))))))
+      (user_type
+        (type_identifier))))
+  (typealias_declaration
+    (type_identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)))
+    (tuple_type
+      (tuple_type_element
+        (user_type
+          (type_identifier)))
+      (tuple_type_element
+        (user_type
+          (type_identifier))))))
+
+============
+Nested types
+============
+
+struct A {
+  struct B {
+    enum C {}
+  }
+}
+
+---
+
+(source_file
+  (struct_declaration
+    (type_identifier)
+    (class_body
+      (struct_declaration
+        (type_identifier)
+        (class_body
+          (enum_declaration
+            (type_identifier)
+            (enum_body)))))))

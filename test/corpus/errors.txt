@@ -1,0 +1,26 @@
+==============================
+Missing closing brace recovers
+:error
+==============================
+
+func f() {
+  let x = 1
+
+let y = 2
+
+---
+
+(source_file)
+
+===============================
+Garbage token in statement list
+:error
+===============================
+
+let a = 1
+let b = )
+let c = 3
+
+---
+
+(source_file)

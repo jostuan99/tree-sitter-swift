@@ -1,0 +1,106 @@
+=========
+Async let
+=========
+
+async let a = fetch()
+let b = await a
+
+---
+
+(source_file
+  (property_declaration
+    (modifiers
+      (modifier))
+    (property_binding
+      (simple_identifier)
+      (call_expression
+        (simple_identifier)
+        (value_arguments))))
+  (property_declaration
+    (property_binding
+      (simple_identifier)
+      (await_expression
+        (simple_identifier)))))
+
+==========
+Task group
+==========
+
+await withTaskGroup(of: Int.self) { group in
+  group.addTask { 1 }
+}
+
+---
+
+(source_file
+  (await_expression
+    (call_expression
+      (simple_identifier)
+      (value_arguments
+        (value_argument
+          (simple_identifier)
+          (navigation_expression
+            (simple_identifier)
+            (simple_identifier))))
+      (trailing_closures
+        (closure_expression
+          (closure_signature
+            (closure_parameters
+              (closure_parameter
+                (simple_identifier))))
+          (call_expression
+            (navigation_expression
+              (simple_identifier)
+              (simple_identifier))
+            (trailing_closures
+              (closure_expression
+                (integer_literal)))))))))
+
+===============================
+Sendable closures and isolation
+===============================
+
+nonisolated(unsafe) var x = 0
+func f(_ op: sending @escaping () -> Void) {}
+func g(isolation: isolated (any Actor)? = #isolation) {}
+
+---
+
+(source_file
+  (property_declaration
+    (modifiers
+      (modifier))
+    (property_binding
+      (simple_identifier)
+      (integer_literal)))
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause
+      (parameter
+        (wildcard)
+        (simple_identifier)
+        (parameter_modifier)
+        (attributed_type
+          (attribute
+            (user_type
+              (type_identifier)))
+          (function_type
+            (tuple_type)
+            (user_type
+              (type_identifier))))))
+    (code_block))
+  (function_declaration
+    (simple_identifier)
+    (parameter_clause
+      (parameter
+        (simple_identifier)
+        (parameter_modifier)
+        (optional_type
+          (tuple_type
+            (tuple_type_element
+              (existential_type
+                (user_type
+                  (type_identifier))))))
+        (macro_expansion_expression
+          (macro_name))))
+    (code_block)))
