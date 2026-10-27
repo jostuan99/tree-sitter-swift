@@ -12,7 +12,7 @@
     "name": "JosSteve",
     "email": "josephtuan99@gmail.com"
   },
-  "main": "bindings/node",
+  "main": "bindings/node/index.js",
   "types": "bindings/node/index.d.ts",
   "keywords": [
     "incremental",
